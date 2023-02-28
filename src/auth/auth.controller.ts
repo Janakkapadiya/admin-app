@@ -1,3 +1,4 @@
+import { Roles } from 'src/auth/roles.decoretor';
 import { LoginDto } from './dto/login';
 import {
   Body,
@@ -24,6 +25,26 @@ import { ChangePassword } from './dto/changePassword';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  // @Post('createAdmin')
+  // @UsePipes(ValidationPipe)
+  // async createAdmin(
+  //   @Body() createAdminDto: CreateAdminDto,
+  //   @Res() res: Response,
+  // ) {
+
+  // }
+
+  @Post('admin/createUser')
+  @Roles('ADMIN')
+  @UsePipes(ValidationPipe)
+  async createUser(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
+    try {
+      await this.authService.createUser(createUserDto, res);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+
   @Post('login')
   async userLogIn(@Body() loginDto: any, @Res() res: Response) {
     const { token, user } = await this.authService.login(loginDto as LoginDto);
@@ -35,16 +56,6 @@ export class AuthController {
     });
 
     return res.send({ success: true, user });
-  }
-
-  @Post('admin/createUser')
-  @UsePipes(ValidationPipe)
-  async createUser(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
-    try {
-      await this.authService.createUser(createUserDto, res);
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
-    }
   }
 
   @Post('change-password')
