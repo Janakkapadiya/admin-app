@@ -1,0 +1,7 @@
+# for database
+
+# 1. npm install --save @nestjs/typeorm typeorm mysql2
+
+# nextjs common
+
+# nextjs class-validator
