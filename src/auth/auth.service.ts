@@ -1,4 +1,4 @@
-import { RoleEnum } from '../user/enums/user.role';
+import { RoleEnum } from 'src/user/enums/user.role';
 import { LoginDto } from './dto/login';
 import { User } from 'src/user/user.model';
 import { InjectRepository } from '@nestjs/typeorm';

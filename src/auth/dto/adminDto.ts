@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString, IsUppercase } from 'class-validator';
-import { RoleEnum } from '../../user/enums/user.role';
+import { RoleEnum } from 'src/user/enums/user.role';
 
 export class AdminDto {
   @IsNotEmpty()

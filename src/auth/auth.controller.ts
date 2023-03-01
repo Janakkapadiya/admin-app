@@ -9,7 +9,6 @@ import {
   UseGuards,
   ValidationPipe,
   UsePipes,
-  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
@@ -51,6 +50,7 @@ export class AuthController {
   }
 
   @Post('login')
+  @UsePipes(ValidationPipe)
   async userLogIn(@Body() loginDto: any, @Res() res: Response) {
     const { token, user } = await this.authService.login(loginDto as LoginDto);
 
