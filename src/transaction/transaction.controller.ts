@@ -8,8 +8,6 @@ import {
   Param,
   Get,
   Delete,
-  UsePipes,
-  ValidationPipe,
   Patch,
   Query,
 } from '@nestjs/common';
@@ -30,7 +28,6 @@ export class TransactionController {
   @Post('createTransaction')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('USER')
-  @UsePipes(ValidationPipe)
   @ApiBody({ type: TransactionDto })
   async createTransaction(
     @Body() transactionDto: TransactionDto,
