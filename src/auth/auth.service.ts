@@ -2,12 +2,7 @@ import { RoleEnum } from 'src/user/enums/user.role';
 import { LoginDto } from './dto/login';
 import { User } from 'src/user/user.model';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  Injectable,
-  NotFoundException,
-  Res,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, Res, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -31,6 +26,14 @@ export class AuthService {
     const { email, password, firstName, lastName, roles } = adminDto;
 
     const present = await this.repo.findOne({ where: { email } });
+
+    if (
+      roles === RoleEnum.SupportDesk ||
+      roles === RoleEnum.PowerUser ||
+      roles === RoleEnum.User
+    ) {
+      return res.send(403).json({ message: 'only admin roles can be created' });
+    }
 
     if (present) {
       return res.status(403).json({ message: 'this admin already present' });
@@ -83,19 +86,19 @@ export class AuthService {
 
     if (checkUser) {
       return res.status(403).json({ message: 'Please Use Different Email' });
+    } else {
+      const user = new User();
+      user.email = email;
+      user.password = password;
+      user.firstName = firstName;
+      user.lastName = lastName;
+      user.roles = roles;
+
+      this.repo.create(user);
+      await this.repo.save(user);
+      await this.emailSend(user, res);
+      delete user.password;
     }
-
-    const user = new User();
-    user.email = email;
-    user.password = password;
-    user.firstName = firstName;
-    user.lastName = lastName;
-    user.roles = roles;
-
-    this.repo.create(user);
-    await this.repo.save(user);
-    await this.emailSend(user);
-    delete user.password;
 
     return res.status(200).json({ message: 'otp has been send to your mail' });
   }
@@ -104,13 +107,13 @@ export class AuthService {
     return await bcrypt.compare(password, hash);
   }
 
-  async emailSend(user: CreateUserDto) {
+  async emailSend(user: CreateUserDto, @Res() res: Response) {
     const { email } = user;
     const userExist = await this.repo.findOne({ where: { email } });
     if (!userExist) {
-      throw new NotFoundException(
-        'otp could not be send because there is no user',
-      );
+      return res.status(200).json({
+        message: 'otp could not be send because user could not found',
+      });
     }
 
     const opt = Math.floor(Math.random() * 10000 + 1);

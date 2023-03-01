@@ -14,7 +14,7 @@ import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { CreateUserDto } from './dto/createUser';
 import { ApplyUser } from './user.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { User } from '../user/user.model';
 import { CurrentUser } from './user.decorator';
 import { ChangePassword } from './dto/changePassword';
@@ -29,6 +29,7 @@ export class AuthController {
 
   @Post('createAdmin')
   @UsePipes(ValidationPipe)
+  // @ApiBody({ type: AdminDto })
   async createAdmin(@Body() adminDto: AdminDto, @Res() res: Response) {
     try {
       await this.authService.createAdmin(adminDto, res);
@@ -41,6 +42,7 @@ export class AuthController {
   @UsePipes(ValidationPipe)
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('ADMIN')
+  // @ApiBody({ type: CreateUserDto })
   async createUser(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
     try {
       await this.authService.createUser(createUserDto, res);
@@ -51,6 +53,7 @@ export class AuthController {
 
   @Post('login')
   @UsePipes(ValidationPipe)
+  @ApiBody({ type: LoginDto })
   async userLogIn(@Body() loginDto: any, @Res() res: Response) {
     const { token, user } = await this.authService.login(loginDto as LoginDto);
 
@@ -65,6 +68,7 @@ export class AuthController {
 
   @Post('change-password')
   @UsePipes(ValidationPipe)
+  // @ApiBody({ type: ChangePassword })
   async changePassword(
     @Body() changeUserPassword: ChangePassword,
     @Res() res: Response,

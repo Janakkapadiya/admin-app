@@ -1,4 +1,4 @@
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiBody } from '@nestjs/swagger';
 import {
   Controller,
   Post,
@@ -28,9 +28,10 @@ export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
   @Post('createTransaction')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('USER')
   @UsePipes(ValidationPipe)
+  @ApiBody({ type: TransactionDto })
   async createTransaction(
     @Body() transactionDto: TransactionDto,
     @Req() req: Request,
@@ -57,15 +58,16 @@ export class TransactionController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('USER')
   async deleteTransaction(@Param('id') id: number) {
     return await this.transactionService.deleteTransaction(id);
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('USER')
+  @ApiBody({ type: UpdateTransactionDto })
   async updateTransaction(
     @Param('id') id: number,
     @Body() updateTransactionDto: UpdateTransactionDto,
