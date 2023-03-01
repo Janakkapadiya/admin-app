@@ -12,12 +12,9 @@ export class RolesGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    console.log(context.getHandler());
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
     console.log(roles);
     const request = context.switchToHttp().getRequest();
-    console.log(request.user);
-
     if (request?.user) {
       const { id } = request.user;
       const user = await this.repo.findOne({ where: { id } });

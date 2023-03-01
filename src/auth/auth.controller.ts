@@ -19,24 +19,29 @@ import { ApiTags } from '@nestjs/swagger';
 import { User } from '../user/user.model';
 import { CurrentUser } from './user.decorator';
 import { ChangePassword } from './dto/changePassword';
+import { AuthGuard } from '@nestjs/passport';
+import { AdminDto } from './dto/adminDto';
+import { RolesGuard } from './roles.guard';
 
 @ApiTags('auth')
 @Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  // @Post('createAdmin')
-  // @UsePipes(ValidationPipe)
-  // async createAdmin(
-  //   @Body() createAdminDto: CreateAdminDto,
-  //   @Res() res: Response,
-  // ) {
-
-  // }
+  @Post('createAdmin')
+  @UsePipes(ValidationPipe)
+  async createAdmin(@Body() adminDto: AdminDto, @Res() res: Response) {
+    try {
+      await this.authService.createAdmin(adminDto, res);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
 
   @Post('admin/createUser')
-  @Roles('ADMIN')
   @UsePipes(ValidationPipe)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('ADMIN')
   async createUser(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
     try {
       await this.authService.createUser(createUserDto, res);

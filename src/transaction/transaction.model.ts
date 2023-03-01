@@ -27,7 +27,7 @@ export class Transaction {
   @Exclude()
   userId: number;
 
-  @ManyToOne(() => User, (user) => user.transactions, { eager: true })
+  @ManyToOne(() => User, (user) => user.transaction, { eager: true })
   @JoinColumn({
     referencedColumnName: 'id',
   })

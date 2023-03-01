@@ -1,15 +1,12 @@
-import { RolesGuard } from './roles.guard';
-import { TransactionModule } from './../transaction/transaction.module';
 import { User } from 'src/user/user.model';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.stratagy';
 import { EmailModule } from 'src/email/email.module';
-// import { TransactionModule } from '../transaction/transaction.module';
 
 @Module({
   imports: [

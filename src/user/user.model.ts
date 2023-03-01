@@ -54,7 +54,7 @@ export class User {
   otp: number;
 
   @OneToMany(() => Transaction, (transaction) => transaction.user)
-  transactions: Transaction[];
+  transaction: Transaction[];
 
   @BeforeInsert()
   async hashPassword(): Promise<void> {

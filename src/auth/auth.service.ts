@@ -16,6 +16,7 @@ import { EmailService } from '../email/email.service';
 import { ConfigService } from '@nestjs/config';
 import { ChangePassword } from './dto/changePassword';
 import { Response } from 'express';
+import { AdminDto } from './dto/adminDto';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +26,27 @@ export class AuthService {
     private mailService: EmailService,
     private configService: ConfigService,
   ) {}
+
+  async createAdmin(adminDto: AdminDto, @Res() res: Response) {
+    const { email, password, firstName, lastName, roles } = adminDto;
+
+    const present = await this.repo.findOne({ where: { email } });
+
+    if (present) {
+      return res.status(403).json({ message: 'this admin already present' });
+    } else {
+      const admin = new User();
+      admin.email = email;
+      admin.password = password;
+      admin.firstName = firstName;
+      admin.lastName = lastName;
+      admin.roles = roles;
+
+      this.repo.create(admin);
+      await this.repo.save(admin);
+    }
+    return res.status(200).json({ message: 'admin created successfully' });
+  }
 
   async login(loginDto: LoginDto) {
     const user = await this.repo

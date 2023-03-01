@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import entities from './typeORM/entityConfig';
 import { AuthModule } from './auth/auth.module';
-import { rootConfigModule } from './config.module';
+import { rootConfigModule } from 'src/config.module';
 
 @Module({
   imports: [
@@ -17,7 +17,8 @@ import { rootConfigModule } from './config.module';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: '88998899',
+      // password: '88998899',
+      password: 'janak123',
       database: 'admin_panel',
       entities,
       synchronize: true,

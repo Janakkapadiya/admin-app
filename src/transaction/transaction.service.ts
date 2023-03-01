@@ -44,10 +44,6 @@ export class TransactionService {
       .createQueryBuilder('transaction')
       .leftJoinAndSelect('transaction.user', 'user');
 
-    console.log('************');
-    console.log(myQuery);
-    console.log('************');
-
     if (!(Object.keys(query).length === 0) && query.constructor === Object) {
       const queryKeys = Object.keys(query); // get the keys of the query string
 
